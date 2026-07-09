@@ -1,0 +1,93 @@
+/* 1. 웹 폰트 불러오기 (맨 윗줄에 작성) */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+@import url("https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. 프로젝트 전체 기본 폰트로 강제 지정 */
+@layer base {
+  html,
+  body {
+    font-family: "Pretendard", sans-serif;
+  }
+}
+
+/* =========================================
+   React Calendar 커스텀 디자인 (온맘 스타일)
+   ========================================= */
+
+/* 1. 달력 전체 껍데기 */
+.react-calendar {
+  border: none !important; /* 못생긴 기본 회색 테두리 제거 */
+  font-family: inherit !important; /* 우리 앱의 gowun 폰트 따라가게 */
+  width: 100% !important;
+  background-color: transparent !important;
+}
+
+/* 2. 상단 네비게이션 (2026년 7월, 좌우 화살표) */
+.react-calendar__navigation {
+  margin-bottom: 0.5rem;
+}
+.react-calendar__navigation button {
+  font-weight: 800;
+  font-size: 1.1rem;
+  border-radius: 12px; /* 버튼을 둥글게 */
+  transition: background-color 0.2s;
+}
+.react-calendar__navigation button:disabled {
+  background-color: transparent !important;
+}
+/* 화살표나 연월에 마우스 올렸을 때 연한 핑크빛 */
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #fff3f0 !important;
+}
+
+/* 3. 요일 표시 (일, 월, 화...) */
+.react-calendar__month-view__weekdays {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #9ca3af; /* Tailwind의 text-gray-400 색상 */
+  text-transform: uppercase;
+}
+/* 요일 밑에 생기는 점선 밑줄 제거 */
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important;
+}
+
+/* 4. 각각의 날짜 칸 (Tile) */
+.react-calendar__tile {
+  padding: 12px 0 !important; /* 위아래 여백을 줘서 칸을 넉넉하게 */
+  border-radius: 16px !important; /* 각진 사각형을 예쁜 모서리로 */
+  transition: all 0.2s;
+}
+/* 마우스 올렸을 때 회색 대신 예쁜 피치색 */
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #fff3f0 !important;
+}
+
+/* 5. 오늘 날짜 스타일 (노란색 촌스러운 배경 없애기) */
+.react-calendar__tile--now {
+  background-color: transparent !important;
+  color: #ff8ca2 !important; /* 글씨만 핑크색으로! */
+  font-weight: 800;
+}
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  background-color: #fff3f0 !important;
+}
+
+/* 6. 선택된 날짜 (가장 중요! 파란색 -> 핑크색으로 덮어씌우기) */
+.react-calendar__tile--active {
+  background-color: #ff8ca2 !important; /* pinky */
+  color: white !important;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(255, 140, 162, 0.4); /* 예쁜 핑크 그림자 */
+}
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background-color: #ff8ca2 !important;
+}
