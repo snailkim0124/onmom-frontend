@@ -25,7 +25,7 @@ const FamilyHome = ({ setActiveTab }: FamilyHomeProps) => {
             Good Morning,
           </h1>
           <h1 className="font-gowun text-2xl font-bold text-gray-800">
-            남편님 👨‍👩‍👦
+            남편님
           </h1>
         </div>
 
