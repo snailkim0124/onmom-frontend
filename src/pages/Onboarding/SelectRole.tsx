@@ -3,7 +3,7 @@ import Button from "../../components/common/Button.tsx";
 import logoImg from "../../assets/images/logo.png";
 
 interface SelectRoleProps {
-  onNext: (role: "mother" | "family") => void;
+  onNext: (role: "MOTHER" | "FAMILY") => void;
 }
 
 const SelectRole = ({ onNext }: SelectRoleProps) => {
@@ -38,7 +38,7 @@ const SelectRole = ({ onNext }: SelectRoleProps) => {
         {/* 🚀 2. 산모 버튼 클릭 시 "mother" 전달 */}
         <Button
           className="h-16 text-25 shadow-lg"
-          onClick={() => onNext("mother")}
+          onClick={() => onNext("MOTHER")}
         >
           산모에요.
         </Button>
@@ -47,7 +47,7 @@ const SelectRole = ({ onNext }: SelectRoleProps) => {
         <Button
           variant="secondary"
           className="h-75 text-2xl shadow-md"
-          onClick={() => onNext("family")}
+          onClick={() => onNext("FAMILY")}
         >
           가족이에요.
         </Button>
