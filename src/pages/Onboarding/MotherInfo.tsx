@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Button from "../../components/common/Button.tsx";
 import Input from "../../components/common/Input.tsx";
 import Select from "../../components/common/Select.tsx";
+import { api } from "../../api/axios";
 
 // App.tsx에서 받을 onNext 함수 타입 지정 (성공 시 생성된 데이터 등을 넘겨줄 수 있도록 확장 가능)
 interface MotherInfoProps {
@@ -49,8 +50,8 @@ const MotherInfo = ({ onNext }: MotherInfoProps) => {
 
     console.log("백엔드로 전송할 API Request Body:", requestBody);
 
-    // TODO: 이 시점에 실제 API 통신을 수행합니다.
-    // const response = await api.post('/api/v1/pregnancies', requestBody);
+
+    const response = await api.post('/api/v1/pregnancies', requestBody);
 
     alert(`${formData.babyName} 엄마(${weekStart}~${weekEnd}주차), 정보 등록이 완료되었습니다! 🎉`);
     onNext();

@@ -2,20 +2,26 @@ import React from "react";
 import kakaoLogo from "../../assets/images/kakao.webp";
 import googleLogo from "../../assets/images/google.webp";
 import appleLogo from "../../assets/images/apple.webp";
+import { api } from "../../api/axios";
 
 interface LoginProps {
   onNext: () => void;
+  // 🚀 App.tsx의 소문자 role을 넘겨받아 임시 저장하기 위한 props 추가
+  userRole: "mother" | "family" | null;
 }
 
-const Login = ({ onNext }: LoginProps) => {
+const Login = ({ onNext, userRole }: LoginProps) => {
   const btnBaseStyle =
       "relative w-full rounded-xl py-4 text-base font-bold flex items-center justify-center transition duration-200 active:scale-[0.98]";
 
   // 🚀 카카오 인가 코드 요청 핸들러
   const handleKakaoLogin = () => {
-    // 백엔드 README 기준 설정 값들
-    const REST_API_KEY = "YOUR_KAKAO_REST_API_KEY"; // 백엔드 ONMOM_KAKAO_CLIENT_ID와 동일한 값
-    const REDIRECT_URI = window.location.origin + "/auth/kakao-callback"; // 백엔드 ONMOM_KAKAO_REDIRECT_URI와 동일한 값
+    const REST_API_KEY = "YOUR_KAKAO_REST_API_KEY";
+    const REDIRECT_URI = window.location.origin + "/auth/kakao-callback";
+
+    // 🚀 [조치 사항] 카카오로 튕겨가기 전, 선택했던 역할을 백엔드 대문자 규격(MOTHER/FAMILY)으로 브라우저에 임시 보관
+    const backendRole = userRole === "family" ? "FAMILY" : "MOTHER";
+    localStorage.setItem("userRole", backendRole);
 
     // CSRF 방지를 위한 state 생성 (백엔드 지침 반영)
     const state = Math.random().toString(36).substring(2, 11);
@@ -46,7 +52,7 @@ const Login = ({ onNext }: LoginProps) => {
         <div className="flex w-full flex-col gap-4">
           {/* 1. 카카오 로그인 */}
           <button
-              onClick={handleKakaoLogin} // 🚀 카카오 로그인 핸들러 연결
+              onClick={handleKakaoLogin}
               className={`${btnBaseStyle} bg-[#FEE500] text-[#000000] opacity-90 hover:opacity-100`}
           >
             <img
@@ -59,7 +65,7 @@ const Login = ({ onNext }: LoginProps) => {
 
           {/* 2. 구글 로그인 */}
           <button
-              onClick={() => handleUnimplementedLogin("구글")} // 🚀 미지원 안내
+              onClick={() => handleUnimplementedLogin("구글")}
               className={`${btnBaseStyle} bg-white border border-gray-300 text-gray-700 shadow-sm hover:bg-gray-50 opacity-50`}
           >
             <img
@@ -72,7 +78,7 @@ const Login = ({ onNext }: LoginProps) => {
 
           {/* 3. 애플 로그인 */}
           <button
-              onClick={() => handleUnimplementedLogin("Apple")} // 🚀 미지원 안내
+              onClick={() => handleUnimplementedLogin("Apple")}
               className={`${btnBaseStyle} bg-black text-white hover:bg-gray-800 shadow-md opacity-50`}
           >
             <img

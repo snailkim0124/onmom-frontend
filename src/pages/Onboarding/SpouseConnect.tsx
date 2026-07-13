@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../components/common/Button.tsx";
-
+import { api } from "../../api/axios";
 interface SpouseConnectProps {
   onNext: () => void;
   // 🚀 상위 컴포넌트(App.tsx 등)에서 백엔드 규격에 맞는 유저 역할 값을 주입받습니다.
@@ -22,11 +22,11 @@ const SpouseConnect = ({ onNext, userRole, pregnancyId }: SpouseConnectProps) =>
 
       // 아직 발급된 코드가 없다면 백엔드 API 호출
       if (!myCode) {
-        // TODO: 실제 API 호출부 연동
-        //const response = await api.post(`/api/v1/pregnancies/${pregnancyId}/family-invite-codes`);
-        //myCode = response.data.data.code;
 
-        myCode = "A7K2Q9"; //  코드 임시 대입
+        const response = await api.post(`/api/v1/pregnancies/${pregnancyId}/family-invite-codes`);
+        myCode = response.data.data.code;
+
+
         setGeneratedCode(myCode);
       }
 

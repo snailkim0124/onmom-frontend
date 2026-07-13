@@ -5,6 +5,7 @@ import Layout from "./components/layout/Layout.tsx";
 import Splash from "./pages/Onboarding/Splash.tsx";
 import SelectRole from "./pages/Onboarding/SelectRole.tsx";
 import Login from "./pages/Onboarding/Login.tsx";
+import KakaoCallback from "./pages/Onboarding/KakaoCallback.tsx"; // 🚀 주소지에 맞게 콜백 컴포넌트 추가
 
 // 👩‍🍼 산모(Mother)용 메인 페이지
 import MotherInfo from "./pages/Onboarding/MotherInfo.tsx";
@@ -12,7 +13,7 @@ import SpouseConnect from "./pages/Onboarding/SpouseConnect.tsx";
 import Home from "./pages/Mother/Home.tsx";
 import AiChat from "./pages/Mother/Aichat.tsx";
 import Record from "./pages/Mother/Record.tsx";
-import FamilyManage from "./pages/Mother/FamilyManage.tsx"; // 🚀 이름 통일
+import FamilyManage from "./pages/Mother/FamilyManage.tsx";
 import MyPage from "./pages/Mother/MyPage.tsx";
 
 // 👨‍👩‍👦 가족(Family)용 메인 페이지
@@ -23,100 +24,103 @@ import FamilyMyPage from "./pages/FamilyRole/FamilyMyPage.tsx";
 import FamilyInfo from "./pages/FamilyRole/FamilyInfo.tsx";
 
 export default function App() {
-  // 1. 앱 진행 단계 상태
+  // 'callback' 단계를 step 조건에 추가
   const [currentStep, setCurrentStep] = useState<
-    "splash" | "role" | "login" | "motherInfo" | "connect" | "main"
+      "splash" | "role" | "login" | "callback" | "motherInfo" | "connect" | "main"
   >("splash");
 
-  // 2. 하단 네비게이션 탭 상태
   const [activeTab, setActiveTab] = useState("home");
+  const [userRole, setUserRole] = useState<"mother" | "family" | null>("mother");
 
-  // 🌟 3. 현재 접속한 사용자의 역할 상태 (기본값은 null 또는 'mother')
-  const [userRole, setUserRole] = useState<"mother" | "family" | null>(
-    "mother",
-  );
-
-  // 스플래시 화면 타이머
+  //  진입 주소를 감지하는 인터셉터 배치 (카카오 리다이렉트 대응용)
   useEffect(() => {
-    if (currentStep === "splash") {
+    if (window.location.pathname === "/auth/kakao-callback") {
+      setCurrentStep("callback");
+    }
+  }, []);
+
+  // 스플래시 화면 타이머 (주소창이 콜백이 아닐 때만 작동하도록 안전 가드 추가)
+  useEffect(() => {
+    if (currentStep === "splash" && window.location.pathname !== "/auth/kakao-callback") {
       const timer = setTimeout(() => setCurrentStep("role"), 2500);
       return () => clearTimeout(timer);
     }
   }, [currentStep]);
 
-  // 로그인 성공 시 실행할 라우팅 로직
-  const handleLoginSuccess = () => {
-    if (userRole === "family") {
-      setCurrentStep("connect"); // 남편은 산모 정보 입력 패스하고 바로 연결!
+  // 로그인 성공 후 내부 단계 이동 핸들러
+  const handleLoginSuccess = (role: "mother" | "family") => {
+    setUserRole(role); // 백엔드 검증 결과값으로 최종 동기화
+    if (role === "family") {
+      setCurrentStep("connect");
     } else {
-      setCurrentStep("motherInfo"); // 산모는 정보 입력으로!
+      setCurrentStep("motherInfo");
     }
   };
 
   return (
-    // 🚀 모든 화면(온보딩+메인)이 모바일 사이즈(max-w-430px) 안에서 보이도록 감싸줍니다.
-    <div className="flex min-h-screen items-center justify-center bg-gray-200">
-      <div className="relative h-screen w-full max-w-[430px] overflow-hidden bg-white shadow-2xl sm:h-[90vh] sm:rounded-[2rem]">
-        {/* ---------------------------------------------------- */}
-        {/* 🟢 [메인 화면] 하단 탭바(Layout)가 있는 상태 */}
-        {/* ---------------------------------------------------- */}
-        {currentStep === "main" && (
-          <Layout
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            userRole={userRole}
-          >
-            {/* 👩‍🍼 산모 모드일 때 렌더링되는 화면들 */}
-            {userRole === "mother" && (
-              <>
-                {activeTab === "home" && <Home setActiveTab={setActiveTab} />}
-                {activeTab === "chat" && <AiChat />}
-                {activeTab === "record" && <Record />}
-                {activeTab === "family" && <FamilyManage />}
-                {activeTab === "mypage" && <MyPage />}
-              </>
-            )}
+      <div className="flex min-h-screen items-center justify-center bg-gray-200">
+        <div className="relative h-screen w-full max-w-[430px] overflow-hidden bg-white shadow-2xl sm:h-[90vh] sm:rounded-[2rem]">
 
-            {/* 👨‍👩‍👦 가족(남편) 모드일 때 렌더링되는 화면들 */}
-            {userRole === "family" && (
-              <>
-                {activeTab === "home" && (
-                  <FamilyHome setActiveTab={setActiveTab} />
+          {/* 🟢 [메인 화면] 하단 탭바(Layout)가 있는 상태 */}
+          {currentStep === "main" && (
+              <Layout activeTab={activeTab} setActiveTab={setActiveTab} userRole={userRole}>
+                {userRole === "mother" && (
+                    <>
+                      {activeTab === "home" && <Home setActiveTab={setActiveTab} />}
+                      {activeTab === "chat" && <AiChat />}
+                      {activeTab === "record" && <Record />}
+                      {activeTab === "family" && <FamilyManage />}
+                      {activeTab === "mypage" && <MyPage />}
+                    </>
                 )}
-                {activeTab === "chat" && <FamilyChat />}
-                {activeTab === "record" && <FamilyRecord />}
-                {activeTab === "family" && <FamilyInfo />}
-                {activeTab === "mypage" && <FamilyMyPage />}
-              </>
-            )}
-          </Layout>
-        )}
 
-        {/* ---------------------------------------------------- */}
-        {/* 🟡 [온보딩 화면] 앱 초기 진입 및 가입 단계 (전체 화면) */}
-        {/* ---------------------------------------------------- */}
-        {currentStep === "splash" && <Splash />}
+                {userRole === "family" && (
+                    <>
+                      {activeTab === "home" && <FamilyHome setActiveTab={setActiveTab} />}
+                      {activeTab === "chat" && <FamilyChat />}
+                      {activeTab === "record" && <FamilyRecord />}
+                      {activeTab === "family" && <FamilyInfo />}
+                      {activeTab === "mypage" && <FamilyMyPage />}
+                    </>
+                )}
+              </Layout>
+          )}
 
-        {currentStep === "role" && (
-          <SelectRole
-            onNext={(role) => {
-              setUserRole(role);
-              setCurrentStep("login");
-            }}
-          />
-        )}
+          {/* ---------------------------------------------------- */}
+          {/* 🟡 [온보딩 화면] 앱 초기 진입 및 가입 단계 (전체 화면) */}
+          {/* ---------------------------------------------------- */}
+          {currentStep === "splash" && <Splash />}
 
-        {/* 🚀 Login 컴포넌트 내부에서 카카오로그인 버튼 등을 누르면 onNext가 실행되게 설계! */}
-        {currentStep === "login" && <Login onNext={handleLoginSuccess} />}
+          {currentStep === "role" && (
+              <SelectRole
+                  onNext={(role) => {
+                    setUserRole(role);
+                    setCurrentStep("login");
+                  }}
+              />
+          )}
 
-        {currentStep === "motherInfo" && (
-          <MotherInfo onNext={() => setCurrentStep("connect")} />
-        )}
+          {/* 🚀 userRole 상태 주입 */}
+          {currentStep === "login" && (
+              <Login userRole={userRole} onNext={() => handleLoginSuccess(userRole || "mother")} />
+          )}
 
-        {currentStep === "connect" && (
-          <SpouseConnect onNext={() => setCurrentStep("main")} />
-        )}
+          {/* 🚀 카카오 인증코드를 받아 백엔드 JWT를 받아낼 전용 핸들러 연결 */}
+          {currentStep === "callback" && (
+              <KakaoCallback
+                  onLoginSuccess={(finalRole) => handleLoginSuccess(finalRole)}
+                  onLoginFailure={() => setCurrentStep("login")}
+              />
+          )}
+
+          {currentStep === "motherInfo" && (
+              <MotherInfo onNext={() => setCurrentStep("connect")} />
+          )}
+
+          {currentStep === "connect" && (
+              <SpouseConnect userRole={userRole === "family" ? "FAMILY" : "MOTHER"} onNext={() => setCurrentStep("main")} />
+          )}
+        </div>
       </div>
-    </div>
   );
 }
