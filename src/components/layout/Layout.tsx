@@ -11,20 +11,20 @@ interface LayoutProps {
   children: React.ReactNode;
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  userRole?: "mother" | "family" | null;
+  userRole?: "MOTHER" | "FAMILY" | null;
 }
 
-// 🚀 2. userRole 프롭스 받기 (기본값은 "mother")
+// 🚀 2. userRole 프롭스 받기 (기본값은 "MOTHER")
 const Layout = ({
   children,
   activeTab,
   setActiveTab,
-  userRole = "mother",
+  userRole = "MOTHER",
 }: LayoutProps) => {
   // 🚀 3. 역할에 따라 메인 테마 색상 변수 설정
-  const themeColor = userRole === "family" ? "text-indigo-500" : "text-pinky";
+  const themeColor = userRole === "FAMILY" ? "text-indigo-500" : "text-pinky";
   const hoverColor =
-    userRole === "family" ? "hover:text-indigo-500" : "hover:text-pinky";
+    userRole === "FAMILY" ? "hover:text-indigo-500" : "hover:text-pinky";
 
   const navItems = [
     { id: "home", label: "홈", icon: <HomeFilled className="text-2xl" /> },
@@ -38,7 +38,7 @@ const Layout = ({
       label: "기록",
       icon: <FileTextFilled className="text-2xl" />,
     },
-    { id: "family", label: "가족", icon: <HeartFilled className="text-2xl" /> },
+    { id: "FAMILY", label: "가족", icon: <HeartFilled className="text-2xl" /> },
     { id: "mypage", label: "마이", icon: <SmileFilled className="text-2xl" /> },
   ];
 

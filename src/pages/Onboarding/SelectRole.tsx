@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../components/common/Button.tsx";
+import Button from "../../components/common/Button";
 import logoImg from "../../assets/images/logo.png";
 
 interface SelectRoleProps {
@@ -35,7 +35,7 @@ const SelectRole = ({ onNext }: SelectRoleProps) => {
 
       {/* 선택 버튼 영역 (버튼을 위아래로 아주 길고 큼직하게 배치) */}
       <div className="flex w-full flex-col gap-5 mt-12">
-        {/* 🚀 2. 산모 버튼 클릭 시 "mother" 전달 */}
+        {/* 🚀 2. 산모 버튼 클릭 시 "MOTHER" 전달 */}
         <Button
           className="h-16 text-25 shadow-lg"
           onClick={() => onNext("MOTHER")}
@@ -43,7 +43,7 @@ const SelectRole = ({ onNext }: SelectRoleProps) => {
           산모에요.
         </Button>
 
-        {/* 🚀 3. 가족 버튼 클릭 시 "family" 전달 */}
+        {/* 🚀 3. 가족 버튼 클릭 시 "FAMILY" 전달 */}
         <Button
           variant="secondary"
           className="h-75 text-2xl shadow-md"

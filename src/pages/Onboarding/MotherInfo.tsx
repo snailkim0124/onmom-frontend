@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Button from "../../components/common/Button.tsx";
-import Input from "../../components/common/Input.tsx";
-import Select from "../../components/common/Select.tsx";
+import Button from "../../components/common/Button";
+import Input from "../../components/common/Input";
+import Select from "../../components/common/Select";
 import { api } from "../../api/axios";
 
 // App.tsx에서 받을 onNext 함수 타입 지정 (성공 시 생성된 데이터 등을 넘겨줄 수 있도록 확장 가능)
@@ -18,13 +18,13 @@ const MotherInfo = ({ onNext }: MotherInfoProps) => {
   });
 
   const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.name || !formData.babyName) {
       alert("모든 정보를 입력해 주세요!");
       return;
@@ -50,10 +50,11 @@ const MotherInfo = ({ onNext }: MotherInfoProps) => {
 
     console.log("백엔드로 전송할 API Request Body:", requestBody);
 
+    const response = await api.post("/api/v1/pregnancies", requestBody);
 
-    const response = await api.post('/api/v1/pregnancies', requestBody);
-
-    alert(`${formData.babyName} 엄마(${weekStart}~${weekEnd}주차), 정보 등록이 완료되었습니다! 🎉`);
+    alert(
+      `${formData.babyName} 엄마(${weekStart}~${weekEnd}주차), 정보 등록이 완료되었습니다! 🎉`,
+    );
     onNext();
   };
 
@@ -69,53 +70,53 @@ const MotherInfo = ({ onNext }: MotherInfoProps) => {
   });
 
   return (
-      <div className="flex min-h-screen flex-col bg-appBg p-6 pt-12">
-        {/* 상단 타이틀 */}
-        <div className="mb-10">
-          <h1 className="font-gowun text-3xl font-extrabold leading-snug text-gray-800">
-            소중한 아이와의 <br />
-            만남을 준비해 볼까요?
-          </h1>
-          <p className="mt-3 text-sm text-gray-500">
-            맞춤형 케어를 위해 기본 정보를 입력해 주세요.
-          </p>
-        </div>
-
-        {/* 정보 입력 폼 영역 */}
-        <div className="flex flex-col gap-6">
-          <Input
-              label="산모 이름"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="이름을 입력해 주세요"
-          />
-
-          <Input
-              label="아이 태명"
-              name="babyName"
-              value={formData.babyName}
-              onChange={handleChange}
-              placeholder="예: 튼튼이, 사랑이"
-          />
-
-          {/* 3. 주수 선택창 배치 */}
-          <Select
-              label="현재 임신 주수"
-              name="weekRange"
-              value={formData.weekRange}
-              onChange={handleChange}
-              options={weekOptions}
-          />
-        </div>
-
-        {/* 하단 고정 완료 버튼 */}
-        <div className="pb-8 mt-12">
-          <Button onClick={handleSubmit} className="shadow-lg">
-            등록하기
-          </Button>
-        </div>
+    <div className="flex min-h-screen flex-col bg-appBg p-6 pt-12">
+      {/* 상단 타이틀 */}
+      <div className="mb-10">
+        <h1 className="font-gowun text-3xl font-extrabold leading-snug text-gray-800">
+          소중한 아이와의 <br />
+          만남을 준비해 볼까요?
+        </h1>
+        <p className="mt-3 text-sm text-gray-500">
+          맞춤형 케어를 위해 기본 정보를 입력해 주세요.
+        </p>
       </div>
+
+      {/* 정보 입력 폼 영역 */}
+      <div className="flex flex-col gap-6">
+        <Input
+          label="산모 이름"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="이름을 입력해 주세요"
+        />
+
+        <Input
+          label="아이 태명"
+          name="babyName"
+          value={formData.babyName}
+          onChange={handleChange}
+          placeholder="예: 튼튼이, 사랑이"
+        />
+
+        {/* 3. 주수 선택창 배치 */}
+        <Select
+          label="현재 임신 주수"
+          name="weekRange"
+          value={formData.weekRange}
+          onChange={handleChange}
+          options={weekOptions}
+        />
+      </div>
+
+      {/* 하단 고정 완료 버튼 */}
+      <div className="pb-8 mt-12">
+        <Button onClick={handleSubmit} className="shadow-lg">
+          등록하기
+        </Button>
+      </div>
+    </div>
   );
 };
 
