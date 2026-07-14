@@ -46,7 +46,7 @@ const KakaoCallback = ({
         };
 
         const response = await api.post(
-          "/api/v1/auth/kakao-login",
+          "/api/v1/auth/kakao/login",
           requestBody,
         );
         const responseData = response.data.data as LoginApiResponse;

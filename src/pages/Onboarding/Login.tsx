@@ -19,7 +19,7 @@ const Login = ({ onNext, userRole }: LoginProps) => {
   // 🚀 카카오 인가 코드 요청 핸들러
   const handleKakaoLogin = () => {
     const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
-    const REDIRECT_URI = window.location.origin + "/auth/kakao-callback";
+    const REDIRECT_URI = window.location.origin + "/auth/kakao/callback";
 
     // 🚀 [조치 사항] 카카오로 튕겨가기 전, 선택했던 역할을 백엔드 대문자 규격(MOTHER/FAMILY)으로 브라우저에 임시 보관
     const backendRole = userRole === "FAMILY" ? "FAMILY" : "MOTHER";

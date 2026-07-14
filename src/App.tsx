@@ -36,7 +36,7 @@ export default function App() {
 
   //  진입 주소를 감지하는 인터셉터 배치 (카카오 리다이렉트 대응용)
   useEffect(() => {
-    if (window.location.pathname === "/auth/kakao-callback") {
+    if (window.location.pathname === "/auth/kakao/callback") {
       setCurrentStep("callback");
     }
   }, []);
@@ -45,7 +45,7 @@ export default function App() {
   useEffect(() => {
     if (
       currentStep === "splash" &&
-      window.location.pathname !== "/auth/kakao-callback"
+      window.location.pathname !== "/auth/kakao/callback"
     ) {
       const timer = setTimeout(() => setCurrentStep("role"), 2500);
       return () => clearTimeout(timer);
