@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react"; // 🚀 1. useRef 임포트 추가
 import { api } from "../../api/axios";
 
 interface LoginApiResponse {
@@ -20,6 +20,9 @@ const KakaoCallback = ({
   onLoginSuccess,
   onLoginFailure,
 }: KakaoCallbackProps) => {
+  // 🚀 2. API 중복 호출을 막기 위한 자물쇠(Lock) 생성
+  const hasCalledAPI = useRef(false);
+
   useEffect(() => {
     const handleLoginProcess = async () => {
       const params = new URLSearchParams(window.location.search);
@@ -38,6 +41,10 @@ const KakaoCallback = ({
         onLoginFailure();
         return;
       }
+
+      // 🚀 3. 자물쇠 검사: 이미 한 번 호출했다면 함수 강제 종료 (중복 방지)
+      if (hasCalledAPI.current) return;
+      hasCalledAPI.current = true; // 통과하면서 자물쇠 잠그기
 
       try {
         const requestBody = {
