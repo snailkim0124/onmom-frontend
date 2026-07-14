@@ -19,31 +19,28 @@ const SpouseConnect = ({
   const [isCopied, setIsCopied] = useState(false);
   const [generatedCode, setGeneratedCode] = useState(""); // 🚀 산모용 발급된 코드 저장용
 
-  // 1. 산모용(MOTHER): 내 초대 코드 발급 및 복사하기
+  // 1. 산모용(MOTHER): 가짜 초대 코드 발급 및 복사하기
   const handleCopyCode = async () => {
+    // 🚀 [시연용 Mocking] API 호출 대신 고정 코드 사용
+    const mockCode = "ONMOM123";
+    setGeneratedCode(mockCode);
+
+    await navigator.clipboard.writeText(mockCode);
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
+
+    /* // 서버 복구 시 아래 주석 해제
     try {
-      let myCode = generatedCode;
-
-      // 아직 발급된 코드가 없다면 백엔드 API 호출
-      if (!myCode) {
-        const response = await api.post(
-          `/api/v1/pregnancies/${pregnancyId}/family-invite-codes`,
-        );
-        myCode = response.data.data.code;
-
-        setGeneratedCode(myCode);
-      }
-
-      await navigator.clipboard.writeText(myCode);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (err) {
-      alert("코드 발급 및 복사에 실패했습니다.");
-    }
+      const response = await api.post(`/api/v1/pregnancies/${pregnancyId}/family-invite-codes`);
+      setGeneratedCode(response.data.data.code);
+      // ... 복사 로직
+    } catch (err) { alert("코드 발급 실패"); }
+    */
   };
 
-  // 2. 가족용(FAMILY): 코드 입력 후 백엔드 인증(POST) 요청하기
+  // 2. 가족용(FAMILY): 코드 입력 후 백엔드 인증 없이 성공 처리하기
   const handleConnect = async () => {
+    // 입력값 검증만 유지
     if (inviteCode.length < 6) {
       alert("6자리 초대 코드를 정확히 입력해 주세요.");
       return;
@@ -51,29 +48,20 @@ const SpouseConnect = ({
 
     setIsConnecting(true);
 
-    try {
-      // 🚀 백엔드 API 연결 스펙
-      // const response = await api.post('/api/v1/family-invite-codes/accept', { code: inviteCode });
+    // 🚀 [강제 이동] 로직 단순화
+    console.log("시연 모드: 즉시 성공으로 처리");
 
-      console.log("백엔드로 보낼 초대코드 수락 요청:", { code: inviteCode });
+    // 상태 변경
+    setIsConnecting(false);
+    setIsSuccess(true);
 
-      setTimeout(() => {
-        setIsConnecting(false);
-        setIsSuccess(true);
-
-        // 연결 성공 애니메이션 보여주고 1.5초 뒤에 홈 화면으로 이동
-        setTimeout(() => {
-          onNext();
-        }, 1500);
-      }, 1000);
-    } catch (error) {
-      setIsConnecting(false);
-      alert("올바르지 않은 초대 코드이거나 만료되었습니다.");
-    }
+    // 이동 확인을 위해 alert 추가
+    alert("연결 성공! 다음 페이지로 이동합니다.");
+    onNext(); // 👈 여기서 바로 호출!
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-appBg p-6 pt-12 text-center animate-fade-in">
+    <div className="flex min-h-screen flex-col bg-appBg p-6 pt-12 text-center">
       {/* 상단 타이틀 */}
       <div className="mb-10">
         <h1 className="leading-snug font-gowun text-3xl font-extrabold text-gray-800">

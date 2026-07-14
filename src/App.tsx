@@ -62,6 +62,11 @@ export default function App() {
     }
   };
 
+  const handleNextStep = () => {
+    console.log("다음 단계로 이동!");
+    setCurrentStep("main");
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-200">
       <div className="relative h-screen w-full max-w-[430px] overflow-hidden bg-white shadow-2xl sm:h-[90vh] sm:rounded-[2rem]">
@@ -135,7 +140,7 @@ export default function App() {
         {currentStep === "connect" && (
           <SpouseConnect
             userRole={userRole === "FAMILY" ? "FAMILY" : "MOTHER"}
-            onNext={() => setCurrentStep("main")}
+            onNext={handleNextStep} // 이렇게 직접 선언한 함수를 넘겨줘!
           />
         )}
       </div>

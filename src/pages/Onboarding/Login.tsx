@@ -19,7 +19,7 @@ const Login = ({ onNext, userRole }: LoginProps) => {
   // 🚀 카카오 인가 코드 요청 핸들러
   const handleKakaoLogin = () => {
     const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
-    const REDIRECT_URI = window.location.origin + "/auth/kakao/callback";
+    const REDIRECT_URI = "http://localhost:3000/auth/kakao/callback";
 
     // 🚀 [조치 사항] 카카오로 튕겨가기 전, 선택했던 역할을 백엔드 대문자 규격(MOTHER/FAMILY)으로 브라우저에 임시 보관
     const backendRole = userRole === "FAMILY" ? "FAMILY" : "MOTHER";
@@ -33,6 +33,30 @@ const Login = ({ onNext, userRole }: LoginProps) => {
     const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&state=${state}`;
 
     window.location.href = kakaoAuthUrl;
+  };
+
+  // 🚀 [추가] 데모 로그인 핸들러
+  const handleDemoLogin = async () => {
+    try {
+      // 1. body 없이 호출
+      const response = await api.post("/v1/dev/auth/demo-login");
+
+      // 2. 응답 구조 확인 및 저장
+      const { userId, role, accessToken } = response.data.data;
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("userId", String(userId));
+      localStorage.setItem("role", role);
+
+      // 3. API 기본 헤더 설정 (앞으로 모든 통신에 Authorization 추가됨)
+      api.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+
+      alert("데모 로그인 성공! 바로 기능을 테스트해보세요.");
+      onNext(); // 로그인 성공 후 다음 단계로 이동
+    } catch (error) {
+      console.error("데모 로그인 실패:", error);
+      alert("데모 로그인 중 오류가 발생했습니다.");
+    }
   };
 
   const handleUnimplementedLogin = (provider: string) => {
@@ -91,6 +115,14 @@ const Login = ({ onNext, userRole }: LoginProps) => {
             className="absolute left-6 h-6 w-6 object-contain"
           />
           Apple로 시작하기
+        </button>
+
+        {/* 🚀 [추가] 데모 로그인 버튼 */}
+        <button
+          onClick={handleDemoLogin}
+          className={`${btnBaseStyle} bg-gray-700 text-white hover:bg-gray-800`}
+        >
+          데모 로그인으로 체험하기
         </button>
       </div>
     </div>

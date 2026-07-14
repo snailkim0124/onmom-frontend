@@ -30,32 +30,24 @@ const MotherInfo = ({ onNext }: MotherInfoProps) => {
       return;
     }
 
-    // 백엔드 API `POST /api/v1/pregnancies` 규격에 맞게 데이터 가공
-    const [weekStart, weekEnd] = formData.weekRange.split("-").map(Number);
+    // [데모 시연을 위한 Mocking 로직]
+    console.log("시연 모드: 서버 통신 없이 성공 처리", formData);
 
-    // 출산 예정일(dueDate): 필수 값 포맷(YYYY-MM-DD)을 맞추기 위해
-    // 현재 날짜 기준으로 남은 주수를 계산해 더하거나, 우선 기본 포맷 날짜 생성
-    const today = new Date();
-    const remainingWeeks = 40 - weekStart; // 통상 임신 기간 40주 기준
-    today.setDate(today.getDate() + remainingWeeks * 7);
-    const calculatedDueDate = today.toISOString().split("T")[0]; // YYYY-MM-DD 형식
+    // 2. 사용자에게 성공 알림
+    alert(`${formData.babyName} 엄마, 정보 등록이 완료되었습니다! 🎉`);
 
-    const requestBody = {
-      motherDisplayName: formData.name,
-      babyNickname: formData.babyName,
-      pregnancyWeekStart: weekStart,
-      pregnancyWeekEnd: weekEnd,
-      dueDate: calculatedDueDate, // 계산된 예정일 대입
-    };
-
-    console.log("백엔드로 전송할 API Request Body:", requestBody);
-
-    const response = await api.post("/api/v1/pregnancies", requestBody);
-
-    alert(
-      `${formData.babyName} 엄마(${weekStart}~${weekEnd}주차), 정보 등록이 완료되었습니다! 🎉`,
-    );
+    // 3. 바로 다음 페이지로 이동
     onNext();
+
+    /* // 나중에 서버가 고쳐지면 이 아래 코드로 다시 갈아끼우면 돼!
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await api.post(`/api/v1/pregnancies?currentUserId=${userId}`, requestBody);
+      onNext();
+    } catch (error) {
+      alert("정보 등록 중 오류가 발생했습니다.");
+    }
+    */
   };
 
   // 총 10개의 구간(10개월) 생성
