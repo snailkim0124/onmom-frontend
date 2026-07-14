@@ -45,10 +45,7 @@ const KakaoCallback = ({
           role: selectedRole,
         };
 
-        const response = await api.post(
-          "/api/v1/auth/kakao/login",
-          requestBody,
-        );
+        const response = await api.post("/v1/auth/kakao-login", requestBody);
         const responseData = response.data.data as LoginApiResponse;
 
         // 자체 JWT 토큰 브라우저 영구 보관 (우리 무전기에 토큰 장착 완료)
