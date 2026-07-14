@@ -48,7 +48,7 @@ const KakaoCallback = ({
 
       try {
         const requestBody = {
-          authorizationCode: code,
+          authorizationcode: code,
           role: selectedRole,
         };
 
