@@ -45,6 +45,9 @@ const KakaoCallback = ({
           role: selectedRole,
         };
 
+        // 🧹 썩은 토큰 비우기 (방어 코드)
+        localStorage.removeItem("accessToken");
+
         const response = await api.post("/v1/auth/kakao-login", requestBody);
         const responseData = response.data.data as LoginApiResponse;
 
