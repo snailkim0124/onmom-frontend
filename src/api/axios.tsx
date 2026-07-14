@@ -2,8 +2,8 @@ import axios from "axios";
 
 // 🚀 1. 백엔드 서버와 통신할 기본 인스턴스 생성
 export const api = axios.create({
-  // 백엔드 개발 팀이 로컬(컴퓨터)에서 띄운 Spring Boot 서버 주소
-  baseURL: "http://127.0.0.1:8080",
+  // 💥 여기를 수정했습니다! (Vercel Proxy를 타기 위해 상대 경로로 변경)
+  baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
   },
